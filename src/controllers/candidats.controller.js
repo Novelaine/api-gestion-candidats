@@ -33,16 +33,9 @@ const create = async (req, res) => {
     if (!name || !email) {
       return res.status(400).json({ message: "Name et email requis" });
     }
-
-    /*
-    if(poste_id){
-    const poste = await postesService.getById(poste_id);
-      if(poste.rows.length === 0 ){
-        return res.status(404).json({ message: "Poste non trouvé" });
-      }
-    }
-    */
-    const result = await candidatsService.create(name, email, poste_id);
+    const cvPath = req.file ? req.file.filename : null;
+    
+    const result = await candidatsService.create(name, email, poste_id, cvPath);
 
     return res.status(201).json(result.rows[0]);
 
@@ -53,6 +46,9 @@ const create = async (req, res) => {
     }
     if(error.message === "POSTE_NOT_FOUND"){
       return res.status(404).json({ message: "Poste non trouvé" });
+    }
+    if (error.message === "Seuls les fichiers PDF sont autorisés") {
+      return res.status(400).json({ message: error.message });
     }
     return res.status(500).json({ message: "Erreur serveur" });
   }

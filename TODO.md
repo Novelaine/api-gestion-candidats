@@ -9,12 +9,12 @@
 - [x] Tester CRUD (GET, POST, PUT, DELETE) avec Postman
 
 ## Base de données
-- [ ] Installer PostgreSQL
-- [ ] Créer table candidats
-- [ ] Créer table postes
+- [X] Installer PostgreSQL
+- [X] Créer table candidats
+- [X] Créer table postes
 
 ## Routes API
-- [ ] GET /candidats
-- [ ] POST /candidats
-- [ ] GET /postes
-- [ ] POST /postes
+- [X] GET /candidats
+- [X] POST /candidats
+- [X] GET /postes
+- [X] POST /postes

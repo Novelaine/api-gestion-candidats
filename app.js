@@ -6,7 +6,7 @@ app.use(cors({
 }));
 */
 const express = require('express');
-//const cors = require('cors');
+const cors = require('cors');
 
 const app = express();
 /* On  crée une instance serveur */
@@ -18,7 +18,11 @@ const postesRoutes = require('./src/routes/postes.routes');
 
 app.use('/candidats', candidatsRoutes);
 app.use('/postes', postesRoutes);
+app.use("/uploads", express.static("uploads"));
+app.use(cors());
 
+const path = require('path');
+app.use(express.static(path.join(__dirname, 'frontend')));
 
 app.listen(3000, () => {
   console.log('Serveur démarré sur http://localhost:3000');

@@ -11,6 +11,14 @@ API REST développée avec Node.js, Express et PostgreSQL permettant la gestion 
 - Architecture MVC simplifiée (controllers / services / routes)
 - Gestion des erreurs SQL (23505, 23503)
 
+## Fonctionnalités
+
+- Ajouter un candidat
+- Upload d’un CV (PDF)
+- Afficher la liste des candidats
+- Voir le CV d’un candidat
+- Supprimer un candidat
+- Suppression automatique du fichier CV sur le serveur
 
 ## Installation
 
@@ -79,6 +87,16 @@ app.js
 404 → Ressource non trouvée
 400 → Données invalides
 500 → Erreur serveur
+
+- Accès aux CV
+. Les fichiers sont servis statiquement via :
+    /uploads
+    Exemple :
+    http://localhost:3000/uploads/nom_du_cv.pdf
+
+- Exemple affichage frontend
+. Chaque candidat affiche :
+    Nom - Email - Voir CV - Supprimer
 
 - Objectif pédagogique
 
