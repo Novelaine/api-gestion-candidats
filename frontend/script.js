@@ -50,41 +50,78 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-loadBtn.addEventListener("click", async () => {
+
+let currentPage = 1;
+  const limit = 5;
+  let currentSearch = "";
+
+async function loadCandidats() {
+
   candidatsList.innerHTML = "";
 
   try {
-    const response = await fetch(`${API_URL}/candidats`);
-    const data = await response.json();
+
+    const response = await fetch(
+      `${API_URL}/candidats?page=${currentPage}&limit=${limit}&search=${currentSearch}`
+    );
+
+    const result = await response.json();
+    const data = result.data;
+
 
     data.forEach(candidat => {
+
       const li = document.createElement("li");
+    const date = new Date(candidat.created_at).toLocaleDateString();
+
+
       li.innerHTML = `
         <strong>${candidat.name}</strong> - ${candidat.email}
-        ${candidat.cv_path ? 
-          ` - <a href="${API_URL}/uploads/${candidat.cv_path}" target="_blank">Voir CV</a>` 
+        - Poste : ${candidat.poste_titre}
+        - Le : ${date}
+        ${candidat.cv_path
+          ? ` - <a href="${API_URL}/uploads/${candidat.cv_path}" target="_blank">Voir CV</a>`
           : ""}
-          - <button class="delete-btn" data-id="${candidat.id}">Supprimer</button>
+
+        - <button class="delete-btn" data-id="${candidat.id}">Supprimer</button>
       `;
+
       candidatsList.appendChild(li);
-    });
-    document.querySelectorAll(".delete-btn").forEach(button => {
-      button.addEventListener("click", async () => {
-        const id = button.dataset.id;
-        if (!confirm("Supprimer ce candidat ?")) return;
-        try {
-          await fetch(`${API_URL}/candidats/${id}`, {
-            method: "DELETE"
-          });
-          button.parentElement.remove();
-        } catch (error) {
-          console.error("Erreur suppression :", error);
-        }
-      });
+
     });
 
+    const totalPages = Math.ceil(result.total / limit);
+    pageInfo.textContent = `Page ${currentPage} / ${totalPages}`;
+
+     prevPage.disabled = currentPage === 1;
+    nextPage.disabled = currentPage === totalPages;
+
   } catch (error) {
-    console.error("Erreur:", error);
+    console.error("Erreur :", error);
+  }
+
+}
+
+loadBtn.addEventListener("click", async () => {
+  currentPage = 1;
+  loadCandidats();
+});
+
+searchBtn.addEventListener("click", () => {
+  currentSearch = searchInput.value;
+  currentPage = 1;
+  loadCandidats();
+});
+
+nextPage.addEventListener("click", () => {
+    currentPage++;
+    loadCandidats();
+});
+
+prevPage.addEventListener("click", () => {
+  if (currentPage > 1) {
+    currentPage--;
+    loadCandidats();
   }
 });
 

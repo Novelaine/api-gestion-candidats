@@ -3,9 +3,26 @@ const postesService = require('../services/postes.service');
 
 const getAll = async (req, res) => {
   try{
-    const result = await candidatsService.getAll();
-    return res.json(result.rows);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const search = req.query.search || "";
+    const poste_id = req.query.poste_id || null;
+    const sort = req.query.sort || "id";
+
+    const offset = (page - 1 ) * limit;
+
+    const result = await candidatsService.getAll(limit, offset, search, poste_id, sort);
+    return res.json({
+      data: result.rows,
+      page,
+      limit,
+      poste_id,
+      sort,
+      total: result.total
+    });
+
   } catch(error){
+    console.error(error);
     return res.status(500).json({ message: "Erreur serveur" });
   }
 };

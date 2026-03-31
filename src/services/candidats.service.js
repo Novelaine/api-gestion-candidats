@@ -2,19 +2,57 @@ const pool = require('../config/db');
 const fs = require("fs");
 const path = require("path");
 
-const getAll = async () => {
-  return await pool.query(`
+const getAll = async (limit, offset, search, poste_id, sort) => {
+  const allowedSort = ["id", "name", "email"];
+  const orderBy = allowedSort.includes(sort) ? sort : "id";
+  let dataQuery = (`
     SELECT
       candidats.id,
       candidats.name,
       candidats.email,
       candidats.poste_id,
       COALESCE(postes.titre, 'Aucun poste assigné') AS poste_titre,
+      postes.created_at AS poste_created_at,
       candidats.cv_path
     FROM candidats
     LEFT JOIN postes
       ON candidats.poste_id = postes.id
-    `);
+    WHERE (candidats.name ILIKE $1 
+      OR candidats.email ILIKE $1)
+  `);
+  
+  const values = [`%${search}%`];
+
+  if (poste_id) {
+    values.push(poste_id);
+    dataQuery += ` AND candidats.poste_id = $${values.length}`;
+  }
+
+  values.push(limit);
+  values.push(offset);
+
+  dataQuery += `
+    ORDER BY candidats.${orderBy} DESC
+    LIMIT $${values.length - 1}
+    OFFSET $${values.length}
+  `;
+
+  const countQuery = `
+    SELECT COUNT(*)
+    FROM candidats
+    WHERE name ILIKE $1
+      OR email ILIKE $1
+  `;
+
+  const data = await pool.query(dataQuery, values);
+  const total = await pool.query(countQuery, [`%${search}%`]);
+
+
+  return{
+    rows: data.rows,
+    total: parseInt(total.rows[0].count)
+  };
+
 };
 
 const getById = async (id) => {
