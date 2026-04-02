@@ -1,5 +1,6 @@
 const candidatsService = require('../services/candidats.service');
 const postesService = require('../services/postes.service');
+const { extractTextFromPDF } = require("../utils/pdf");
 
 const getAll = async (req, res) => {
   try{
@@ -51,8 +52,15 @@ const create = async (req, res) => {
       return res.status(400).json({ message: "Name et email requis" });
     }
     const cvPath = req.file ? req.file.filename : null;
-    
-    const result = await candidatsService.create(name, email, poste_id, cvPath);
+
+    let cvText = null;
+    if(req.file){
+      cvText = await extractTextFromPDF(req.file.path);
+    }
+    /*console.log("FILE :", req.file);*/
+    /*console.log(typeof pdf);*/
+    console.log("Texte extrait (100 chars):", cvText?.substring(0, 100));
+    const result = await candidatsService.create(name, email, poste_id, cvPath, cvText);
 
     return res.status(201).json(result.rows[0]);
 
@@ -63,9 +71,6 @@ const create = async (req, res) => {
     }
     if(error.message === "POSTE_NOT_FOUND"){
       return res.status(404).json({ message: "Poste non trouvé" });
-    }
-    if (error.message === "Seuls les fichiers PDF sont autorisés") {
-      return res.status(400).json({ message: error.message });
     }
     return res.status(500).json({ message: "Erreur serveur" });
   }

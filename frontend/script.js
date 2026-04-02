@@ -79,14 +79,17 @@ async function loadCandidats() {
         <strong>${candidat.name}</strong> - ${candidat.email}
         - Poste : ${candidat.poste_titre}
         - Le : ${date}
+        <div class="actions">
         ${candidat.cv_path
-          ? ` - <a href="${API_URL}/uploads/${candidat.cv_path}" target="_blank">Voir CV</a>`
+          ? ` - <button class="read-btn"> <a href="${API_URL}/uploads/${candidat.cv_path}" target="_blank">Voir CV</a></button>`
           : ""}
 
         - <button class="delete-btn" data-id="${candidat.id}">Supprimer</button>
+        </div>
       `;
 
       candidatsList.appendChild(li);
+      li.classList.add("card");
 
     });
 

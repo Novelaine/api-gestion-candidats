@@ -62,7 +62,7 @@ const getById = async (id) => {
   );
 };
 
-const create = async (name, email, poste_id, cv_path) => {
+const create = async (name, email, poste_id, cv_path, cv_text) => {
   if (poste_id !== null && poste_id !== undefined) {
     const poste = await pool.query(
       'SELECT id FROM postes WHERE id = $1',
@@ -74,8 +74,8 @@ const create = async (name, email, poste_id, cv_path) => {
     }
   }
   return await pool.query(
-    'INSERT INTO candidats (name, email, poste_id, cv_path) VALUES ($1, $2, $3, $4) RETURNING *',
-    [name, email, poste_id, cv_path]
+    'INSERT INTO candidats (name, email, poste_id, cv_path, cv_text) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+    [name, email, poste_id, cv_path, cv_text]
   );
 };
 

@@ -1,46 +1,51 @@
-# API Gestion Candidats
+# API Gestion Candidats : Assistant RH Intelligent
 
 API REST développée avec Node.js, Express et PostgreSQL permettant la gestion de candidats et de postes dans un contexte de recrutement.
 
 
 ## Stack technique
 
-- Node.js
-- Express
+- Node.js / Express
 - PostgreSQL
 - Architecture MVC simplifiée (controllers / services / routes)
 - Gestion des erreurs SQL (23505, 23503)
+- Multer (upload fichiers)
+- pdf-parse (extraction PDF)
 
 ## Fonctionnalités
 
-- Ajouter un candidat
-- Upload d’un CV (PDF)
+- Ajouter un candidat / postes
+- Ajouter, modifier, supprimer un candidat
+- Stockage en base PostgreSQL
 - Afficher la liste des candidats
 - Voir le CV d’un candidat
-- Supprimer un candidat
-- Suppression automatique du fichier CV sur le serveur
+    - Upload d’un CV (PDF)
+    - Extraction automatique du texte
+    - Suppression automatique du fichier CV sur le serveur
+- Pagination, recherche, filtres
+- Gestion des erreurs (upload, DB, etc..)
 
 ## Installation
 
-1. Cloner le repository :
+1. Installer les dépendances :
+
+npm install
+
+2. Créer un fichier .env à la racine :
+
+DATABASE_URL=postgresql://user:password@localhost:5432/nom_db
+PORT=3000
+
+3. Lancer le serveur :
+
+npm run dev
+
+4. Cloner le repository :
 
 ```bash
 git clone https://github.com/TON_PSEUDO/api-gestion-candidats.git
 cd api-gestion-candidats
 ```
-
-2. Installer les dépendances :
-
-npm install
-
-3. Créer un fichier .env à la racine :
-
-DATABASE_URL=postgresql://user:password@localhost:5432/nom_db
-PORT=3000
-
-4. Lancer le serveur :
-
-npm run dev
 
 - Structure du projet
 src/

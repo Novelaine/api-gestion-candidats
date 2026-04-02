@@ -7,38 +7,42 @@
     <title>Gestion Candidats</title>
 </head>
 <body>
-    <h1>Gestion des Candidats</h1>
+    <div class="container">
+        <h1>Gestion des Candidats</h1>
 
-    <section>
-        <h2>Ajouter un candidat</h2>
-        <form id="candidatForm" enctype="multipart/form-data">
-            <input type="text" id="name" placeholder="Nom" required />
-            <input type="email" id="email" placeholder="Email" required />
-            <input type="number" id="poste_id" placeholder="ID Poste (optionnel)" />
-            <input type="file" id="cv" accept="application/pdf" />
-            <button type="submit">Créer</button>
-        </form>
-        <p id="message"></p>
-    </section>
+        <section>
+            <h2>Ajouter un candidat</h2>
+            <form id="candidatForm" enctype="multipart/form-data">
+                <input type="text" id="name" placeholder="Nom" required />
+                <input type="email" id="email" placeholder="Email" required />
+                <input type="number" id="poste_id" placeholder="ID Poste (optionnel)" />
+                <input type="file" id="cv" accept="application/pdf" />
+                <button type="submit">Créer</button>
+            </form>
+            <p id="message"></p>
+        </section>
 
-    <section>
-        <h2>Liste des Postes</h2>
-        <button id="loadBtnP">Charger les postes</button>
-        <ul id="postesList"></ul>
-    </section>
+        <section>
+            <h2>Liste des Postes</h2>
+            <button id="loadBtnP">Charger les postes</button>
+            <ul id="postesList"></ul>
+        </section>
 
-    <section>
-        <h2>Liste des candidats</h2>
-        <input type="text" id="searchInput" placeholder="rechercher candidat..."/>
-        <button id="searchBtn">Rechercher</button>
-        <br><br>
-        <button id="loadBtn">Charger les candidats</button>
-        <ul id="candidatsList"></ul>
-        <br>
-        <button id="prevPage">Précédent</button>
-        <span id="pageInfo"></span>
-        <button id="nextPage">Suivant</button>
-    </section>
+        <section>
+            <h2>Liste des candidats</h2>
+            <input type="text" id="searchInput" placeholder="rechercher candidat..."/>
+            <button id="searchBtn">Rechercher</button>
+            <br><br>
+            <button id="loadBtn">Charger les candidats</button>
+            <ul id="candidatsList"></ul>
+            <br>
+            <div class="btnPage">
+                <button id="prevPage">Précédent</button>
+                <span id="pageInfo"></span>
+                <button id="nextPage">Suivant</button>
+            </div>
+        </section>
+    </div>
 
     <script src="script.js" defer></script>
 </body>
