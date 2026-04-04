@@ -71,20 +71,23 @@ async function loadCandidats() {
 
     data.forEach(candidat => {
 
-      const li = document.createElement("li");
+    const li = document.createElement("li");
     const date = new Date(candidat.created_at).toLocaleDateString();
 
 
       li.innerHTML = `
-        <strong>${candidat.name}</strong> - ${candidat.email}
-        - Poste : ${candidat.poste_titre}
+        <strong>${candidat.name}</strong> - ${candidat.email}<br>
+        - Poste : ${candidat.poste_titre}<br>
         - Le : ${date}
+        
+        ${candidat.cv_summary ? `<br>Résumé : ${candidat.cv_summary}` : ""}
+        ${candidat.score ? `<br>Score : ${candidat.score}%` : ""}
         <div class="actions">
         ${candidat.cv_path
-          ? ` - <button class="read-btn"> <a href="${API_URL}/uploads/${candidat.cv_path}" target="_blank">Voir CV</a></button>`
+          ? `<button class="read-btn"> <a href="${API_URL}/uploads/${candidat.cv_path}" target="_blank">Voir CV</a></button>`
           : ""}
-
-        - <button class="delete-btn" data-id="${candidat.id}">Supprimer</button>
+        <br>
+        <button class="delete-btn" data-id="${candidat.id}">Supprimer</button>
         </div>
       `;
 

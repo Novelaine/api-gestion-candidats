@@ -33,6 +33,7 @@ router.post("/", (req, res) => {
 });
 router.put('/:id', controller.update);
 router.delete('/:id', controller.remove);
+router.get("/:id/analyze", controller.analyze);
 
 
 module.exports = router;

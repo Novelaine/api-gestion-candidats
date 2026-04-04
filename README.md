@@ -11,6 +11,7 @@ API REST développée avec Node.js, Express et PostgreSQL permettant la gestion 
 - Gestion des erreurs SQL (23505, 23503)
 - Multer (upload fichiers)
 - pdf-parse (extraction PDF)
+- OpenAI 
 
 ## Fonctionnalités
 
@@ -24,6 +25,8 @@ API REST développée avec Node.js, Express et PostgreSQL permettant la gestion 
     - Suppression automatique du fichier CV sur le serveur
 - Pagination, recherche, filtres
 - Gestion des erreurs (upload, DB, etc..)
+- IA OpenAI pour analyser automatiquement les CV
+  (Implémenté un mock pour éviter les coûts en dev et permettre des tests offline)
 
 ## Installation
 

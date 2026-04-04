@@ -1,6 +1,7 @@
 const candidatsService = require('../services/candidats.service');
 const postesService = require('../services/postes.service');
 const { extractTextFromPDF } = require("../utils/pdf");
+const { analyzeCV } = require("../services/ai.service");
 
 const getAll = async (req, res) => {
   try{
@@ -116,10 +117,60 @@ const remove = async (req, res) => {
   }
 };
 
+const analyze = async (req,res) => {
+ 
+  try{
+    const { id } = req.params;
+    const candidat = await candidatsService.getById(id);
+    if( candidat.rowCount === 0 ){
+      return res.status(404).json({ message: "Candidat non trouvé" });
+    }
+    const cvText = candidat.rows[0].cv_text;
+    if(!cvText){
+      return res.status(400).json({ message: "Pas de CV à analyser" });
+    }
+    
+    const result = await analyzeCV(cvText);
+
+    if(!result){
+      return res.status(500).json({ message: "Erreur IA" });
+    }
+
+    await candidatsService.updateAnalysis(
+      id,
+      result.summary,
+      result.skills,
+      result.score
+    );
+    return res.json(result);
+    /*
+    try{
+      const result = await analyzeCV(cvText);
+      //return res.json({ analysis: result });
+      // Retourne objet le temps de mettre en place IA
+      return res.json(result);
+
+    }catch(error){
+      if(error.message === "RATE_LIMIT"){
+        return res.status(429).json({ message: "Trop de reqêtes IA, réessaie plus tard" });
+      }
+        
+      return res.status(500).json({ message: "Erreur IA" });
+    }
+    */
+ 
+  }catch(error){
+    console.log(error);
+    return res.status(500).json({ message: "Erreur Serveur" });
+  }
+    
+};
+
 module.exports = {
   getAll,
   getById,
   create,
   update,
-  remove
+  remove,
+  analyze
 };

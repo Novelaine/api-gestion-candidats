@@ -13,7 +13,10 @@ const getAll = async (limit, offset, search, poste_id, sort) => {
       candidats.poste_id,
       COALESCE(postes.titre, 'Aucun poste assigné') AS poste_titre,
       postes.created_at AS poste_created_at,
-      candidats.cv_path
+      candidats.cv_path,
+      candidats.cv_summary,
+      candidats.skills,
+      candidats.score
     FROM candidats
     LEFT JOIN postes
       ON candidats.poste_id = postes.id
@@ -62,7 +65,7 @@ const getById = async (id) => {
   );
 };
 
-const create = async (name, email, poste_id, cv_path, cv_text) => {
+const create = async (name, email, poste_id, cv_path, cv_text, cv_summary, skills, score) => {
   if (poste_id !== null && poste_id !== undefined) {
     const poste = await pool.query(
       'SELECT id FROM postes WHERE id = $1',
@@ -74,8 +77,8 @@ const create = async (name, email, poste_id, cv_path, cv_text) => {
     }
   }
   return await pool.query(
-    'INSERT INTO candidats (name, email, poste_id, cv_path, cv_text) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-    [name, email, poste_id, cv_path, cv_text]
+    'INSERT INTO candidats (name, email, poste_id, cv_path, cv_text, cv_summary, skills, score) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
+    [name, email, poste_id, cv_path, cv_text, null, null, null]
   );
 };
 
@@ -108,10 +111,22 @@ const remove = async (id) => {
   );
 };
 
+const updateAnalysis = async (id, summary, skills, score) => {
+  return await pool.query(
+    `UPDATE candidats 
+     SET cv_summary = $1,
+         skills = $2,
+         score = $3
+     WHERE id = $4`,
+    [summary, JSON.stringify(skills), score, id]
+  );
+};
+
 module.exports = {
   getAll,
   getById,
   create,
   update,
-  remove
+  remove,
+  updateAnalysis
 };
