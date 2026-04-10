@@ -23,10 +23,21 @@
         </section>
 
         <section>
+            <h2>Ajouter un poste</h2>
+            <form id="posteForm" enctype="multipart/form-data">
+                <input type="text" id="titre" placeholder="Titre" required />
+                <input type="text" id="description" placeholder="Description" required />
+                <button type="submit">Créer</button>
+            </form>
+            <p id="message1"></p>
+        </section> 
+
+        <section>
             <h2>Liste des Postes</h2>
             <button id="loadBtnP">Charger les postes</button>
             <ul id="postesList"></ul>
         </section>
+
 
         <section>
             <h2>Liste des candidats</h2>

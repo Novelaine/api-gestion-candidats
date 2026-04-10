@@ -2,6 +2,7 @@ const candidatsService = require('../services/candidats.service');
 const postesService = require('../services/postes.service');
 const { extractTextFromPDF } = require("../utils/pdf");
 const { analyzeCV } = require("../services/ai.service");
+const { computeScore } = require("../utils/scoring");
 
 const getAll = async (req, res) => {
   try{
@@ -130,19 +131,53 @@ const analyze = async (req,res) => {
       return res.status(400).json({ message: "Pas de CV à analyser" });
     }
     
-    const result = await analyzeCV(cvText);
+    // Récupération poste 
+    const poste = await postesService.getById(candidat.rows[0].poste_id);
+    const posteTitre = poste.rows[0]?.titre || "";
+    const posteDescription = poste.rows[0]?.description || "";
 
-    if(!result){
-      return res.status(500).json({ message: "Erreur IA" });
+    const aiResult = await analyzeCV(cvText, {
+      titre: posteTitre,
+      description: posteDescription
+    });
+
+    if(!aiResult){
+      return res.status(500).json({ message: "Erreur analyse IA" });
+    } 
+  
+    // score backend
+    const computedScore = computeScore(aiResult.skills, posteDescription);
+    // score final (mix IA + backend)
+    let finalScore = Math.round((aiResult.score + computedScore) / 2);
+    // logique métier
+    if (posteTitre.toLowerCase().includes("node") &&
+        aiResult.skills.includes("Node.js")) {
+      finalScore += 5;
     }
+    if(posteDescription.includes("junior") && finalScore > 90){
+      finalScore = 90;
+    }
+    finalScore = Math.min(finalScore, 100);
 
+    console.log({
+      aiScore: aiResult.score,
+      computedScore: computedScore,
+      skills: aiResult.skills,
+      poste: posteDescription
+    });
+    // sauvegarde
     await candidatsService.updateAnalysis(
       id,
-      result.summary,
-      result.skills,
-      result.score
+      aiResult.summary,
+      aiResult.skills,
+      finalScore
     );
-    return res.json(result);
+
+    return res.json({
+      summary: aiResult.summary,
+      skills: aiResult.skills,
+      score: finalScore
+    });
     /*
     try{
       const result = await analyzeCV(cvText);
@@ -158,13 +193,15 @@ const analyze = async (req,res) => {
       return res.status(500).json({ message: "Erreur IA" });
     }
     */
- 
+    
   }catch(error){
     console.log(error);
     return res.status(500).json({ message: "Erreur Serveur" });
   }
     
 };
+
+
 
 module.exports = {
   getAll,

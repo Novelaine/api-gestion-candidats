@@ -17,6 +17,7 @@ API REST développée avec Node.js, Express et PostgreSQL permettant la gestion 
 
 - Ajouter un candidat / postes
 - Ajouter, modifier, supprimer un candidat
+- Ajouter un poste
 - Stockage en base PostgreSQL
 - Afficher la liste des candidats
 - Voir le CV d’un candidat
@@ -27,6 +28,8 @@ API REST développée avec Node.js, Express et PostgreSQL permettant la gestion 
 - Gestion des erreurs (upload, DB, etc..)
 - IA OpenAI pour analyser automatiquement les CV
   (Implémenté un mock pour éviter les coûts en dev et permettre des tests offline)
+- Stocker résumé en bdd
+- Score candidat pour le poste
 
 ## Installation
 

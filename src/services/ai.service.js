@@ -4,10 +4,9 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-const USE_MOCK =  true;
-
-const analyzeCV = async (text) => {
+const analyzeCV = async (cvtext, poste) => {
   // MODE MOCK (sans API)
+  const USE_MOCK =  true;
   if(USE_MOCK){
     console.log("MODE MOCK ACTIF");
     return{
@@ -22,21 +21,32 @@ const analyzeCV = async (text) => {
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
-        { role: "system", content: "Tu es un assistant RH expert."},
+        { role: "system", content: "Tu es un assistant RH expert. Réponds UNIQUEMENT en JSON"},
         { role: "user", content: `
-            Analyse ce CV et donne :
+            Analyse ce CV et compare-le au poste :
 
-            1. Un résumé court
-            2. Les compétences principales (liste)
+            POSTE :
+            Titre : ${poste.titre}
+            Description : ${poste.description}
 
             CV :
-            ${text}
+            ${cvtext}
+
+            Retourne ce JSON :
+
+            {
+              "summary": "...",
+              "skills": ["...", "..."],
+              "score": 0-100
+            }
+
+            Le score doit refléter la correspondance avec le poste.
             `
         }
       ],
     });
 
-    return response.choices[0].message.content;
+    return JSON.parse(response.choices[0].message.content);
 
   } catch (error) {
     if(error.status === 429){

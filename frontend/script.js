@@ -8,6 +8,9 @@ const loadBtn = document.getElementById("loadBtn");
 const loadBtnP = document.getElementById("loadBtnP");
 const candidatsList = document.getElementById("candidatsList");
 const postesList = document.getElementById("postesList");
+const formPoste = document.getElementById("posteForm");
+const message1 = document.getElementById("message1");
+
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -50,6 +53,47 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
+formPoste.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const titre = document.getElementById("titre").value;
+  const description = document.getElementById("description").value;
+
+  if(!titre || !description) {
+    message1.textContent = "Tous les champs sont requis";
+    message1.style.color = "red";
+    return;
+  }
+  
+  try {
+    const response = await fetch(`${API_URL}/postes`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        titre,
+        description
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      message1.textContent = data.message || "Erreur";
+      message1.style.color = "red";
+      return;
+    }
+
+    message1.textContent = "Poste créé avec succès !";
+    message1.style.color = "green";
+    formPoste.reset();
+
+  } catch (error) {
+    message1.textContent = "Erreur de connexion au serveur";
+    message1.style.color = "red";
+  }
+});
 
 let currentPage = 1;
   const limit = 5;
